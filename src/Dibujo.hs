@@ -1,11 +1,14 @@
-module Dibujo (encimar, 
+module Dibujo (encimar,
     -- agregar las funciones constructoras
     ) where
 
 
 -- nuestro lenguaje 
-data Dibujo a = Dibujo
+data Dibujo a = Dibujo Figura | Rotar (Dibujo a) |
+                Encimar (Dibujo a) (Dibujo a) deriving (Eq, Show)
 
+data Figura = Triangulo | Rectangulo | Circulo
+              | Cuadrado | Linea deriving (Eq, Show)
 -- combinadores
 infixr 6 ^^^
 
@@ -14,27 +17,28 @@ infixr 7 .-.
 infixr 8 ///
 
 comp :: Int -> (a -> a) -> a -> a
-comp n f = undefined
+comp 0 _ = id
+comp n f = f . comp (n-1) f
 
 
 -- Funciones constructoras
-figura :: a -> Dibujo a
-figura = undefined
+figura :: Figura -> Dibujo a
+figura x = Dibujo x
 
 encimar :: Dibujo a -> Dibujo a -> Dibujo a
-encimar = undefined
+encimar = Encimar
 
 apilar :: Float -> Float -> Dibujo a -> Dibujo a -> Dibujo a
 apilar = undefined
 
 juntar  :: Float -> Float -> Dibujo a -> Dibujo a -> Dibujo a
-juntar = Juntar
+juntar = undefined
 
 rot45 :: Dibujo a -> Dibujo a
-rot45 = undefined
+rot45 = Rotar
 
 rotar :: Dibujo a -> Dibujo a
-rotar = undefined
+rotar = Rotar
 
 
 espejar :: Dibujo a -> Dibujo a
@@ -51,13 +55,13 @@ espejar = undefined
 
 -- rotaciones
 r90 :: Dibujo a -> Dibujo a
-r90 = undefined
+r90 = comp 2 rot45
 
 r180 :: Dibujo a -> Dibujo a
-r180 = undefined
+r180 = comp 2 r90
 
 r270 :: Dibujo a -> Dibujo a
-r270 = undefined
+r270 = comp 3 r90
 
 -- una figura repetida con las cuatro rotaciones, superimpuestas.
 encimar4 :: Dibujo a -> Dibujo a
